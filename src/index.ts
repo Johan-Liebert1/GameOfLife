@@ -1,7 +1,7 @@
-const gridDiv: HTMLDivElement = document.getElementById("grid")!;
+const gridDiv: HTMLDivElement = <HTMLDivElement>document.getElementById("grid")!;
 let started: boolean = false;
 let interval: number;
-const INTERVAL_DURATION = 500;
+const INTERVAL_DURATION = 200;
 
 const ROWS = 25,
 	COLS = 50;
@@ -87,26 +87,30 @@ const display = (tempGrid: number[][]) => {
 };
 
 const startGame = (): void => {
-	let tempGrid: number[][] = mainGrid.map(r => [...r]);
+	let toChange: number[][] = [];
 
 	for (let row = 0; row < ROWS; row++) {
 		for (let col = 0; col < COLS; col++) {
 			let numNeighbors = getNumberOfAliveNeighbors(row, col);
 
 			if (mainGrid[row][col] === 1 && (numNeighbors < 2 || numNeighbors > 3)) {
-				tempGrid[row][col] = 0;
+				toChange.push([row, col, 0]);
 			} else if (
 				mainGrid[row][col] === 1 &&
 				(numNeighbors === 2 || numNeighbors === 3)
 			) {
-				tempGrid[row][col] = 1;
+				toChange.push([row, col, 1]);
 			} else if (mainGrid[row][col] === 0 && numNeighbors === 3) {
-				tempGrid[row][col] = 1;
+				toChange.push([row, col, 1]);
 			}
 		}
 	}
-	display(tempGrid);
-	mainGrid = tempGrid.map(r => [...r]);
+
+	toChange.forEach(([row, col, number]) => {
+		mainGrid[row][col] = number;
+	});
+
+	display(mainGrid);
 };
 
 const startTheThing = () => {
