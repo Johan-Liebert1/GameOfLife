@@ -87,8 +87,6 @@ const display = (tempGrid: number[][]) => {
 };
 
 const startGame = (): void => {
-	console.log(started);
-
 	let tempGrid: number[][] = mainGrid.map(r => [...r]);
 
 	for (let row = 0; row < ROWS; row++) {
@@ -97,10 +95,13 @@ const startGame = (): void => {
 
 			if (mainGrid[row][col] === 1 && (numNeighbors < 2 || numNeighbors > 3)) {
 				tempGrid[row][col] = 0;
-			} else if (mainGrid[row][col] === 0 && numNeighbors >= 3) {
+			} else if (
+				mainGrid[row][col] === 1 &&
+				(numNeighbors === 2 || numNeighbors === 3)
+			) {
 				tempGrid[row][col] = 1;
-			} else {
-				tempGrid[row][col] = mainGrid[row][col];
+			} else if (mainGrid[row][col] === 0 && numNeighbors === 3) {
+				tempGrid[row][col] = 1;
 			}
 		}
 	}
